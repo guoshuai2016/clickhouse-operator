@@ -211,8 +211,8 @@ func (e *Exporter) collectFromHost(chi *WatchedChi, hostname string, c chan<- pr
 		writer.WriteMetrics(metrics)
 	} else {
 		// In case of an error fetching data from clickhouse store CHI name in e.cleanup
-		glog.Infof("Error querying metrics for %s: %s\n", hostname, err)
-		e.enqueueToRemoveFromWatched(chi)
+		glog.Infof("[sguo] Error querying metrics for %s: %s\n", hostname, err)
+		//e.enqueueToRemoveFromWatched(chi)
 		return
 	}
 
@@ -222,8 +222,8 @@ func (e *Exporter) collectFromHost(chi *WatchedChi, hostname string, c chan<- pr
 		writer.WriteTableSizes(tableSizes)
 	} else {
 		// In case of an error fetching data from clickhouse store CHI name in e.cleanup
-		glog.Infof("Error querying table sizes for %s: %s\n", hostname, err)
-		e.enqueueToRemoveFromWatched(chi)
+		glog.Infof("[sguo] Error querying table sizes for %s: %s\n", hostname, err)
+		//e.enqueueToRemoveFromWatched(chi)
 		return
 	}
 
@@ -233,8 +233,8 @@ func (e *Exporter) collectFromHost(chi *WatchedChi, hostname string, c chan<- pr
 		writer.WriteSystemReplicas(systemReplicas)
 	} else {
 		// In case of an error fetching data from clickhouse store CHI name in e.cleanup
-		glog.Infof("Error querying system replicas for %s: %s\n", hostname, err)
-		e.enqueueToRemoveFromWatched(chi)
+		glog.Infof("[sguo] Error querying system replicas for %s: %s\n", hostname, err)
+		//e.enqueueToRemoveFromWatched(chi)
 		return
 	}
 }

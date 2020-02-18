@@ -92,7 +92,7 @@ func (c *Conn) Query(sql string) (*sqlmodule.Rows, error) {
 		return nil, err
 	}
 
-	rows, err := connect.QueryContext(ctx, sql)
+	rows, err := connect.QueryContext(context.Background(), sql)
 	if err != nil {
 		glog.V(1).Infof("FAILED Query(%s) %v for SQL: %s", dsn, err, sql)
 		return nil, err

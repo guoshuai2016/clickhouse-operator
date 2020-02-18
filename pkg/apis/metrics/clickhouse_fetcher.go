@@ -17,8 +17,9 @@ package metrics
 import (
 	sqlmodule "database/sql"
 	"github.com/MakeNowJust/heredoc"
-
 	"github.com/altinity/clickhouse-operator/pkg/model/clickhouse"
+	"github.com/golang/glog"
+	"strings"
 )
 
 const (
@@ -139,6 +140,9 @@ func (f *ClickHouseFetcher) clickHouseQueryMetrics() ([][]string, error) {
 			var metric, value, description, _type string
 			if err := rows.Scan(&metric, &value, &description, &_type); err == nil {
 				*data = append(*data, []string{metric, value, description, _type})
+			} else {
+				content, _ := rows.Columns()
+				glog.Infof("[sguo] Error scan Query Metrics from row: %s, error: %s", strings.Join(content, ","), err.Error())
 			}
 			return nil
 		},
@@ -169,6 +173,9 @@ func (f *ClickHouseFetcher) clickHouseQueryTableSizes() ([][]string, error) {
 			var database, table, partitions, parts, bytes, uncompressed, _rows string
 			if err := rows.Scan(&database, &table, &partitions, &parts, &bytes, &uncompressed, &_rows); err == nil {
 				*data = append(*data, []string{database, table, partitions, parts, bytes, uncompressed, _rows})
+			} else {
+				content, _ := rows.Columns()
+				glog.Infof("[sguo] Error scan Query Table Sizes from row: %s, error: %s", strings.Join(content, ","), err.Error())
 			}
 			return nil
 		},
@@ -199,6 +206,9 @@ func (f *ClickHouseFetcher) clickHouseQuerySystemReplicas() ([][]string, error) 
 			var database, table, isSessionExpired string
 			if err := rows.Scan(&database, &table, &isSessionExpired); err == nil {
 				*data = append(*data, []string{database, table, isSessionExpired})
+			} else {
+				content, _ := rows.Columns()
+				glog.Infof("[sguo] Error scan Query System Replicas from row: %s, error: %s", strings.Join(content, ","), err.Error())
 			}
 			return nil
 		},
@@ -215,6 +225,7 @@ func (f *ClickHouseFetcher) clickHouseQueryScanRows(sql string, scan func(rows *
 		for rows.Next() {
 			_ = scan(rows, &data)
 		}
+		rows.Close()
 	}
 	return data, nil
 }
