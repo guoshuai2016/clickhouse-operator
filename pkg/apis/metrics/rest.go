@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	_ "net/http/pprof"
 
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/prometheus"
