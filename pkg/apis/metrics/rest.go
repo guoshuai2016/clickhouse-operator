@@ -73,6 +73,7 @@ func (e *Exporter) addWatchedChi(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	chi := &WatchedChi{}
 	if err := json.NewDecoder(r.Body).Decode(chi); err == nil {
+		glog.V(1).Info("sguo someone give me a info %v", chi)
 		if !chi.empty() {
 			// All is OK, CHI seems to be valid
 			exporter.addToWatched(chi)
