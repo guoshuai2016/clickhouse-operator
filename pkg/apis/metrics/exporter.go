@@ -122,7 +122,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 		})
 	}()
 
-	glog.Info("Starting Collect")
+	glog.Info("[sguo] Starting Collect")
 	var wg = sync.WaitGroup{}
 	e.WalkWatchedChi(func(chi *WatchedChi, hostname string) {
 		wg.Add(1)
