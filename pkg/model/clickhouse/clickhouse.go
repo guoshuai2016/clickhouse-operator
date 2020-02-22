@@ -82,6 +82,8 @@ func (c *Conn) Query(sql string) (*sqlmodule.Rows, error) {
 	dsn := c.makeDsn()
 	//glog.V(1).Infof("Query ClickHouse DSN: %s", dsn)
 	connect, err := sqlmodule.Open("clickhouse", dsn)
+	defer connect.Close()
+
 	if err != nil {
 		glog.V(1).Infof("FAILED Open(%s) %v for SQL: %s", dsn, err, sql)
 		return nil, err
