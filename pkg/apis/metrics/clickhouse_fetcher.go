@@ -66,21 +66,20 @@ const (
         'Memory size allocated for primary keys'             AS description,
         'gauge'                                              AS type
     FROM system.parts
-    UNION ALL
-    SELECT 
-        'metric.MemoryDictionaryBytesAllocated'  AS metric,
-        toString(sum(bytes_allocated))           AS value,
-        'Memory size allocated for dictionaries' AS description,
-        'gauge'                                  AS type
-    FROM system.dictionaries
-    UNION ALL
-    SELECT 
-        'metric.DiskFreeBytes'                     AS metric,
-        toString(filesystemFree())                 AS value,
-        'Free disk space available at file system' AS description,
-        'gauge'                                    AS type
+//    UNION ALL
+//    SELECT
+//        'metric.MemoryDictionaryBytesAllocated'  AS metric,
+//        toString(sum(bytes_allocated))           AS value,
+//        'Memory size allocated for dictionaries' AS description,
+//        'gauge'                                  AS type
+//    FROM system.dictionaries
+//    UNION ALL
+//    SELECT
+//        'metric.DiskFreeBytes'                     AS metric,
+//        toString(filesystemFree())                 AS value,
+//        'Free disk space available at file system' AS description,
+//        'gauge'                                    AS type
 	`
-
 	queryTableSizesSQL = `
 	SELECT
 		database,
