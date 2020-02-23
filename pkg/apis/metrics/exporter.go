@@ -216,6 +216,7 @@ func (e *Exporter) collectFromHost(chi *WatchedChi, hostname string, c chan<- pr
 		return
 	}
 
+	/*
 	glog.Infof("Querying table sizes for %s\n", hostname)
 	if tableSizes, err := fetcher.clickHouseQueryTableSizes(); err == nil {
 		glog.Infof("Extracted %d table sizes for %s\n", len(tableSizes), hostname)
@@ -226,6 +227,7 @@ func (e *Exporter) collectFromHost(chi *WatchedChi, hostname string, c chan<- pr
 		//e.enqueueToRemoveFromWatched(chi)
 		return
 	}
+	*/
 
 	glog.Infof("Querying system replicas for %s\n", hostname)
 	if systemReplicas, err := fetcher.clickHouseQuerySystemReplicas(); err == nil {
