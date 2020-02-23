@@ -17,8 +17,14 @@ package metrics
 import (
 	sqlmodule "database/sql"
 	"github.com/MakeNowJust/heredoc"
-
 	"github.com/altinity/clickhouse-operator/pkg/model/clickhouse"
+	"time"
+	"context"
+)
+
+
+const (
+	defaultTimeout  = 10 * time.Second
 )
 
 const (
@@ -65,20 +71,20 @@ const (
         'Memory size allocated for primary keys'             AS description,
         'gauge'                                              AS type
     FROM system.parts
-    UNION ALL
-    SELECT 
-        'metric.MemoryDictionaryBytesAllocated'  AS metric,
-        toString(sum(bytes_allocated))           AS value,
-        'Memory size allocated for dictionaries' AS description,
-        'gauge'                                  AS type
-    FROM system.dictionaries
-    UNION ALL
-    SELECT 
-        'metric.DiskFreeBytes'                     AS metric,
-        toString(filesystemFree())                 AS value,
-        'Free disk space available at file system' AS description,
-        'gauge'                                    AS type
 	`
+//    UNION ALL
+//    SELECT
+//        'metric.MemoryDictionaryBytesAllocated'  AS metric,
+//        toString(sum(bytes_allocated))           AS value,
+//        'Memory size allocated for dictionaries' AS description,
+//        'gauge'                                  AS type
+//    FROM system.dictionaries
+//    UNION ALL
+//    SELECT
+//        'metric.DiskFreeBytes'                     AS metric,
+//        toString(filesystemFree())                 AS value,
+//        'Free disk space available at file system' AS description,
+//        'gauge'                                    AS type
 
 	queryTableSizesSQL = `
 	SELECT
@@ -209,7 +215,12 @@ func (f *ClickHouseFetcher) clickHouseQuerySystemReplicas() ([][]string, error) 
 func (f *ClickHouseFetcher) clickHouseQueryScanRows(sql string, scan func(rows *sqlmodule.Rows, data *[][]string) error) ([][]string, error) {
 	data := make([][]string, 0)
 	conn := f.newConn()
-	if rows, err := conn.Query(heredoc.Doc(sql)); err != nil {
+
+	// Query should be deadlined
+	ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(defaultTimeout))
+	defer cancel()
+
+	if rows, err := conn.QueryContext(ctx, heredoc.Doc(sql)); err != nil {
 		return nil, err
 	} else {
 		for rows.Next() {

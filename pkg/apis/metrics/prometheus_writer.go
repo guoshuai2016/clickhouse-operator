@@ -17,6 +17,7 @@ package metrics
 import (
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/prometheus"
@@ -119,9 +120,13 @@ func writeSingleMetricToPrometheus(out chan<- prometheus.Metric, name string, de
 	}
 	select {
 	case out <- m:
+	case <-time.After(time.Second * 1):
+		glog.Infof("Timeout sending metric to the channel %s", name)
 
+		/*
 	default:
 		glog.Infof("Error sending metric to the channel %s", name)
+		*/
 	}
 }
 

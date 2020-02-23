@@ -20,6 +20,8 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/http/httputil"
+	_ "net/http/pprof"
 
 	"github.com/golang/glog"
 	"github.com/prometheus/client_golang/prometheus"
@@ -58,6 +60,12 @@ func (e *Exporter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "GET":
 		e.getWatchedChi(w, r)
 	case "POST":
+		// Save a copy of this request for debugging.
+		if requestDump, err := httputil.DumpRequest(r, true); err != nil {
+			glog.V(1).Infof("Fail to dump post request, error: %s", err.Error())
+		} else {
+			glog.V(1).Infof("Receive a post request, content: %s", string(requestDump))
+		}
 		e.addWatchedChi(w, r)
 	default:
 		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
